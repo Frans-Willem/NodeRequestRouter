@@ -4,6 +4,22 @@ RequestRouter is a very simple HTTP router for Node.js.
 How simple? It doesn't care about headers, or HTTP methods, it just parses the URL and delivers it to where it's needed.
 It doesn't abstract away from the Node.js http.ServerRequest or http.ServerResponse at all.
 
+Why
+===
+At the time of writing, there are about a dozen different routers and middle-ware.
+However, they all seem to have their own abstraction over the http.ServerRequest and http.ServerResponse, and in most cases they provide a replacement object for http.Server, so there is no way to use two apps for different routers together, or chain two different routers after eachother.
+RequestRouter was specifically written to just parse what it needs, and after that give control to the next part in the chain. This next part can be another RequestRouter, a custom request handler, or possible even a completely different router.
+
+What are the advantages?
+========================
+It's simple and lightweight, and it forces you to keep your website layout in a tree-like fashion (similar to actual filesystems).
+Furthermore, it doesn't abstract away too much from the Node.js http.Server request event, it's only just a mailman delivering requests to the right person, but the recipient will be responsible for handling the request, not the router/mailman.
+
+What are the disadvantages?
+===========================
+- It has a few simple constructs for static text or html, but in general, you'll need to write your own responder.
+- It doesn't bother with the HTTP methods, if you have static data, it just responds with that data, no questions asked.
+
 Where to start?
 ===============
 You start of with a node, the first one of which is always the root node.

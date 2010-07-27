@@ -75,16 +75,21 @@ function createRequestHandler(root) {
 		}
 		var storeRe=/{{([\w\W]*?)}}/g;
 		if (typeof(current.html)=="string")
-			return sendTextResponse(res,current.html.replace(storeRe,readStore),"text/html");
+			return sendTextResponse(req,res,current.html.replace(storeRe,readStore),"text/html");
 		if (typeof(current.text)=="string")
-			return sendTextResponse(res,current.text.replace(storeRe,readStore),"text/plain");
+			return sendTextResponse(req,res,current.text.replace(storeRe,readStore),"text/plain");
 		return sendCodeResponse(res,404);
 	}
 }
 
-function sendTextResponse(res,text,type) {
+function sendTextResponse(req,res,text,type) {
+	var get=(req.method==="GET");
+	var head=(req.method==="HEAD");
+	if (!get && !head)
+		return sendCodeResponse(res,405);
 	res.writeHead(200,{"Content-Type":type||"text/plain","Content-Length":text.length});
-	res.write(text);
+	if (get)
+		res.write(text);
 	res.end();
 }
 
